@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <sys/shm.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+#define ARRAY_SIZE 10
+
+struct user{
+int user_id;
+char* user_name;
+};
+void populate(struct user* user, int size);
+
+int main(void) {
+  struct user arrayS[ARRAY_SIZE];
+  struct user* ptr;
+  ptr = &arrayS[0];
+  pid_t pid = fork();
+  //the child's pid
+  if(pid == 0){
+    printf("the child process\n");
+	printf("%d\n", getpid());
+	populate(ptr, ARRAY_SIZE);
+  }
+  //parents pid
+  else if (pid > 0){
+    printf("the parent process\n");
+	printf("%d\n", getpid());
+  }
+
+else{
+	printf("no pid");
+}
+}
+void populate(struct user* users, int size)
+{
+	//documented from the code we did during your office hours
+	for(int i=0; i < ARRAY_SIZE; i++) {  
+		int id;
+		char name[10];
+		printf("Enter the id: ");
+		scanf("%d", &id);
+		printf("Enter the name: ");
+		scanf("%s", &name[0]);
+		users->user_id = id;
+		users->user_name = name;
+		users++;
+	}
+	
+}
